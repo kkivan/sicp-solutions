@@ -21,8 +21,6 @@
 (define m (list (list 1 (list 2 3)) (list 4 (list 5 6))))
 
 (define (total-weight mobile)
-  (display mobile)
-  (newline)
   (cond ((pair? mobile) (+ (if (pair? (left-branch mobile))
                                (total-weight (left-branch mobile))
                                0)
