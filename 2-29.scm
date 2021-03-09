@@ -13,12 +13,12 @@
   (cadr mobile))
 
 (define (branch-length branch)
-  (car branch))
+  (if (number? (left-branch branch))
+      (left-branch branch)
+      0))
 
 (define (branch-structure branch)
   (cadr branch))
-
-(define m (list (list 1 (list 2 3)) (list 4 (list 5 6))))
 
 (define (total-weight mobile)
   (cond ((pair? mobile) (+ (if (pair? (left-branch mobile))
@@ -28,4 +28,30 @@
         ((null? mobile) 0)
         (else mobile)))
 
+(define m (list (list 2 (list 2 12)) (list 4 (list 5 6))))
+m
 (total-weight m)
+
+(define (branch-weight branch)
+  (if (< 0 (branch-length branch))
+      (* (branch-length branch) (total-weight (right-branch branch)))
+      (branch-weight (left-branch branch))))
+
+(define (mobile? m)
+  (pair? (car m)))
+
+(define (balanced? mobile)
+  (let ((left (left-branch mobile))
+        (right (right-branch mobile)))
+    (if (mobile? mobile)
+        (and  (= (branch-weight left)
+                 (branch-weight right))
+              (balanced? left)
+              (balanced? right)
+              )
+        #t)))
+
+(balanced? m)
+
+
+  
