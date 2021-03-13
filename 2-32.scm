@@ -2,8 +2,6 @@
 #lang scheme
 
 (define (subsets s)
-  (display s)
-  (newline)
   (if (null? s)
       (list '())
       (let ((rest (subsets (cdr s))))
