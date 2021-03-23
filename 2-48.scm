@@ -1,7 +1,5 @@
 #lang sicp
 
-(#%require sicp-pict)
-
 (define (make-vect x y)
   (cons x y))
 
