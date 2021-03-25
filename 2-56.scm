@@ -9,6 +9,7 @@
   (and (number? exp) (= exp num)))
 
 (define (make-sum a1 a2)
+  (display (=number? a2)
   (cond ((=number? a1 0) a2)
         ((=number? a2 0) a1)
         ((and (number? a1) (number? a2)) (+ a1 a2))
@@ -86,5 +87,9 @@
 
 (deriv '(* (* x y) (+ x 3)) 'x)
 
+(deriv '(** x 3) 'x)
+
 (deriv '(** 2 x) 'x)
+
+
 
