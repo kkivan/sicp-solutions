@@ -18,11 +18,10 @@
   (and (pair? x) (eq? (car x) '+)))
 
 (define (addend s) (cadr s))
+
 (define (augend s)
-  (if (pair? (caddr s))
-      (make-sum (car (caddr s))
-                (cdr (caddr s)))
-      (caddr s)))
+  (let ((rest (cddr s)))
+    (fold-right make-sum 0 rest)))
 
 (define (make-product m1 m2)
   (cond ((or (=number? m1 0) (=number? m2 0)) 0)
@@ -32,7 +31,10 @@
         (else (list '* m1 m2))))
 
 (define (multiplier p) (cadr p))
-(define (multiplicand p) (caddr p))
+
+(define (multiplicand p)
+  (let ((rest (cddr p)))
+    (fold-right make-product 1 rest)))
 
 (define (product? x)
   (and (pair? x) (eq? (car x) '*)))
@@ -78,21 +80,15 @@
           (make-product (deriv (multiplier exp) var)
                         (multiplicand exp))))
         ((exponentiation? exp)
-          (make-product  
-           (exponent exp) 
-           (make-exponentiation (base exp) 
-                                (make-sum (exponent exp) -1))))
+         (make-product  
+          (exponent exp) 
+          (make-exponentiation (base exp) 
+                               (make-sum (exponent exp) -1))))
         (error "unknown expression type - DERIV" exp)))
 
-(deriv '(+ x 3) 'x)
+(deriv '(* x y (+ x 3)) 'x)
+ ;; (+ (* x y) (* y (+ x 3))) 
 
-(deriv '(* x y) 'x)
-
-(deriv '(* (* x y) (+ x 3)) 'x)
-
-(deriv '(** x 3) 'x)
-
-(deriv '(** 2 x) 'x)
 
 
 
