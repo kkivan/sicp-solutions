@@ -1,14 +1,10 @@
 #lang sicp
 
-(define (adjoin-set x set)
-  (define (iter x left right)
-    (cond ((null? right) (append left (list x)))
-          ((= x (car right)) set)
-          ((< x (car right)) (append left (list x) right))
-          (else (iter x
-                      (append left (list (car right)))
-                      (cdr right)))))
-  (iter x nil set))
+(define (adjoin-set x set) 
+   (cond ((null? set) (list x)) 
+         ((= x (car set)) set) 
+         ((< x (car set)) (cons x set)) 
+         (else (cons (car set) (adjoin-set x (cdr set))))))
 
 (adjoin-set 0 '(1 3 7))
 (adjoin-set 3 '(1 3 7))
