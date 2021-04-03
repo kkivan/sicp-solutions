@@ -1,0 +1,1 @@
+("8.0" tarm64osx ("166b63c75d7b3eb15be6e392e9a6d01c63d5f59a" . "848ca32d6c17d259fbfc855913c828a9dcac9a07") (collects #"errortrace" #"errortrace-key.rkt") (collects #"scheme" #"main.rkt") (collects #"scheme" #"runtime-config.rkt"))
