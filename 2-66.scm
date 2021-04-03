@@ -16,9 +16,10 @@
               ((< k key) (lookup k (left-branch records)))
               (else (lookup k (right-branch records)))))))
 
-(lookup 2 (make-tree (make-record 4 "a")
-                     (make-tree (make-record 2 "b")
-                                nil
-                                nil)
-                     nil))
+(assert (lookup 2 (make-tree (make-record 4 "a")
+                             (make-tree (make-record 2 "b")
+                                        nil
+                                        nil)
+                             nil))
+        "b")
 
