@@ -29,7 +29,15 @@
 
 (list->tree '(1 3 5 7 9 11))
 
+;a)
 ;Takes a list then gets median element of list and create a node with an entry as this median element,
 ;left branch is partial-tree called recursively but with half length, and because of the length
 ;it will also return right part (all the remaining elements) untouched as a cdr
 ;which will be used to create the right branch
+
+;b)
+;First from the fact that list->tree uses length it cannot be better than O(n),
+;lets check partial-tree implementation
+;the fact that it splits array in 2 parts recursively makes it O(logn),
+;but it also goes through each and every element of list and set them as tree entry,
+;hence it's O(n) too, and the whole algorithm is O(n)
