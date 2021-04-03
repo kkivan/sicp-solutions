@@ -29,4 +29,7 @@
 
 (list->tree '(1 3 5 7 9 11))
 
-;Takes a list then gets median element of list and create a node with an entry as this median element, left branch is partial-tree called recursively but with half length, and because of the length it will also return right part (all the remaining elements) untouched as a cdr which will be used to create the right branch
+;Takes a list then gets median element of list and create a node with an entry as this median element,
+;left branch is partial-tree called recursively but with half length, and because of the length
+;it will also return right part (all the remaining elements) untouched as a cdr
+;which will be used to create the right branch
