@@ -1,0 +1,4 @@
+# DrRacket
+*.rkt~
+*.zo
+*.dep
