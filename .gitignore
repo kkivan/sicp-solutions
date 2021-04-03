@@ -2,3 +2,4 @@
 *.rkt~
 *.zo
 *.dep
+*.scm~
