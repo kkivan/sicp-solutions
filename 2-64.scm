@@ -1,4 +1,5 @@
 #lang sicp
+
 (define (entry tree) (car tree))
 (define (left-branch tree) (cadr tree))
 (define (right-branch tree) (caddr tree))
@@ -7,6 +8,7 @@
 
 (define (list->tree elements)
   (car (partial-tree elements (length elements))))
+
 (define (partial-tree elts n)
   (if (= n 0)
       (cons '() elts)
