@@ -49,7 +49,13 @@
 ; c.
 (put 'deriv '** deriv-exp)
 
-(deriv '(* x x) 'x)
-(deriv '(* x y) 'x)
+(assert (deriv '(* x y (+ x 3)) 'x)
+        '(+ (* x y) (* y (+ x 3))))
+ 
+(assert (deriv '(+ y x) 'x)
+        1)
+
+(assert (deriv '(** x 3) 'x)
+        '(* 3 (** x 2)))
 
 ;d. Only change to get procedure to swap aruments is required 
