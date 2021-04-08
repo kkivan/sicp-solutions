@@ -2,9 +2,12 @@
 
 (provide nil
          flatmap
+         square
          assert)
 
 (define nil '())
+
+(define (square x) (* x x))
 
 (define (fold-right op initial sequence)
   (if (null? sequence)
@@ -21,4 +24,5 @@
 (define (assert actual expected)  
   (if (equal? actual expected)
       'passed
-      actual))
+      (list 'failed 'expected expected 'got actual)))
+
