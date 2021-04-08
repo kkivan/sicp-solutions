@@ -2,6 +2,7 @@
 
 (require "2-67.scm")
 (require "modules/sicp/sicp.rkt")
+(provide encode)
 
 (define (encode message tree)
   (if (null? message)

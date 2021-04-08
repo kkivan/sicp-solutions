@@ -4,6 +4,7 @@
 (require "2-68.scm")
 (require "modules/sicp/sicp.rkt")
 
+(provide generate-huffman-tree)
 (define (make-leaf-set pairs)
   (if (null? pairs)
       '()
