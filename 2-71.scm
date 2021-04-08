@@ -13,8 +13,3 @@
 
 (length (encode '(E) (generate-huffman-tree freq))) ; 1 bit
 (length (encode '(A) (generate-huffman-tree freq))) ; n - 1 bit
-
-
-
-
-
