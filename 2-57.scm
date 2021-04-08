@@ -1,4 +1,16 @@
-#lang sicp
+#lang scheme
+
+(require "modules/sicp/sicp.rkt")
+
+(provide make-sum
+         addend
+         augend
+         make-product
+         multiplier
+         multiplicand
+         exponent
+         make-exponentiation
+         base)
 
 (define (variable? x) (symbol? x))
 
@@ -86,8 +98,10 @@
                                (make-sum (exponent exp) -1))))
         (error "unknown expression type - DERIV" exp)))
 
-(deriv '(* x y (+ x 3)) 'x)
- ;; (+ (* x y) (* y (+ x 3))) 
+(assert (deriv '(* x y (+ x 3)) 'x)
+        '(+ (* x y) (* y (+ x 3))))
+ 
+(assert (deriv '(+ y x) 'x) 1)
 
 
 
