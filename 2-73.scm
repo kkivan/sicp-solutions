@@ -39,15 +39,12 @@
 (define (operands exp) exp)
 
 ; a. number and variable are not tagged with type
-; variable is a symbol but whether it's a type or not depends on the argument
+; variable is a symbol but whether it's a type or not depends on the another argument
 
 ; b.
 
 (put 'deriv '+ deriv-sum)
 (put 'deriv '* deriv-product)
-
-; c.
-(put 'deriv '** deriv-exp)
 
 (assert (deriv '(* x y (+ x 3)) 'x)
         '(+ (* x y) (* y (+ x 3))))
@@ -55,7 +52,10 @@
 (assert (deriv '(+ y x) 'x)
         1)
 
+; c.
+(put 'deriv '** deriv-exp)
+
 (assert (deriv '(** x 3) 'x)
         '(* 3 (** x 2)))
 
-;d. Only change to get procedure to swap aruments is required 
+; d. Only change to get procedure to swap aruments is required 
