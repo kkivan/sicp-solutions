@@ -41,7 +41,7 @@
 (put 'equ? '(complex complex) equal-complex?)
 
 (define (make-rat num den)
-  (attach-tag (list 'rat) (cons num den)))
+  (attach-tag '(rat) (cons num den)))
 
 (assert (equal-rat? (cons 1 2)
                     (cons 1 2))
