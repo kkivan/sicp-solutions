@@ -36,7 +36,7 @@
 
 (define (type-tag datum)
   (if (number? datum)
-      'scheme-number
+      '(scheme-number)
       (if (pair? datum)
           (car datum)
           (error "Bad tagged datum - TYPE-TAG" datum))))
