@@ -7,6 +7,7 @@
          attach-tag
          type-tag
          contents
+         put-coercion
          dispatch-table)
 
 (define dispatch-table '())
@@ -22,9 +23,9 @@
 
 (define (get op type)
   (let ((rows (filter (lambda (row)
-                                (and (eq? op (dispatch-op row))
-                                     (equal? type (dispatch-type row))))
-                              dispatch-table)))
+                        (and (eq? op (dispatch-op row))
+                             (equal? type (dispatch-type row))))
+                      dispatch-table)))
     (if (pair? rows)
         (dispatch-proc (car rows))
         nil)))
@@ -36,7 +37,7 @@
 
 (define (type-tag datum)
   (if (number? datum)
-      '(scheme-number)
+      'scheme-number
       (if (pair? datum)
           (car datum)
           (error "Bad tagged datum - TYPE-TAG" datum))))
@@ -49,8 +50,46 @@
           (error "Bad tagged datum - CONTENTS" datum))))
 
 (define (apply-generic op . args)
-  (let ((type-tags (flatmap type-tag args)))
+  (let ((type-tags (map type-tag args)))
     (let ((proc (get op type-tags)))
       (if (not (null? proc))
           (apply proc (map contents args))
-          nil))))
+          (if (= (length args) 2)
+              (let ((type1 (car type-tags))
+                    (type2 (cadr type-tags))
+                    (a1 (car args))
+                    (a2 (cadr args)))
+                (let ((t1->t2 (get-coercion type1 type2))
+                      (t2->t1 (get-coercion type2 type1)))
+                  (cond ((not (null? t1->t2))
+                         (apply-generic op (t1->t2 a1) a2))
+                        ((not (null? t2->t1))
+                         (apply-generic op a1 (t2->t1 a2)))
+                        (else
+                         (error "No method for these types"
+                                (list op type-tags))))))
+              (error "No method for these types"
+                     (list op type-tags)))))))
+
+
+(define coercion-table '())
+
+(define (put-coercion t1 t2 coer)
+  (set! coercion-table (cons (cons (list t1 t2) coer) coercion-table)))
+
+(define (coer-types coer)
+  (car coer))
+
+(define (coer-proc coer)
+  (cdr coer))
+
+(define (get-coercion t1 t2)
+  (let ((rows (filter (lambda (row)
+                        (equal? (list t1 t2) (coer-types row)))
+                      coercion-table)))
+    (if (pair? rows)
+        (coer-proc (car rows))
+        nil)))
+
+
+

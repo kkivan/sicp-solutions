@@ -22,27 +22,20 @@
   (cdr complex))
 
 (define (equal-complex? l r)
-  (and (= (real l) (real r))
-       (= (imag l) (imag r))))
-
-(assert (equal-complex? (cons 1 2)
-                        (cons 1 2))
-        true)
-
-(assert (equal-complex? (cons 1 3)
-                        (cons 1 2))
-        false)
+  (and (equ? (real l) (real r))
+       (equ? (imag l) (imag r))))
 
 (define (equal-rat? l r)
-  (and (= (num l) (num r))
-       (= (denom l) (denom r))))
+  (and (equ? (num l) (num r))
+       (equ? (denom l) (denom r))))
 
 (put 'equ? '(rat rat) equal-rat?)
 (put 'equ? '(complex complex) equal-complex?)
+;(put 'equ? '(scheme-number scheme-number) =)
 
 (define (make-rat num den)
-  (attach-tag '(rat) (cons num den)))
-
+  (attach-tag 'rat (cons num den)))
+(equ? 1 1)
 (assert (equal-rat? (cons 1 2)
                     (cons 1 2))
         true)
@@ -52,7 +45,15 @@
         false)
 
 (define (make-complex-real-imag real imag)
-  (attach-tag '(complex) (cons real imag)))
+  (attach-tag 'complex (cons real imag)))
+
+(assert (equal-complex? (cons 1 2)
+                        (cons 1 2))
+        true)
+
+(assert (equal-complex? (cons 1 3)
+                        (cons 1 2))
+        false)
 
 (assert (equ? (make-rat 2 3)
               (make-rat 1 2))
@@ -61,6 +62,11 @@
 (assert (equ? (make-rat 1 2)
               (make-rat 1 2))
         true)
+
+(put-coercion 'rat 'complex (lambda (rat)
+                              (make-complex-real-imag rat 0)))
+
+(put-coercion 'scheme-number 'rat (lambda (num) (make-rat num 1)))
 
 (assert (equ? (make-rat 1 2)
               (make-complex-real-imag 1 2))
