@@ -26,3 +26,8 @@
       'passed
       (list 'failed 'expected expected 'got actual)))
 
+(provide print)
+(define (print arg)
+  (display arg)
+  (newline))
+
