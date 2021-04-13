@@ -30,3 +30,8 @@
               (make-rat 1 2)
               (make-rat 4 1)))
 
+;This strategy assumes that only same type operators are registred
+;Another shortcoming of this strategy is transition coercion, i.e.
+;Given we have op registered for B B, expresion (op A B) and available coercions are A->C C->B
+;this strategy fails even though we can apply A->C and C->B to A to coerce it B
+
