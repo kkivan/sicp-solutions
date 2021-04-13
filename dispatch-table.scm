@@ -61,30 +61,20 @@
 
 (define (coerce args)
   (let ((type-tags (map type-tag args)))
-    (if (= (length args) 2)
-        (let ((type1 (car type-tags))
-              (type2 (cadr type-tags))
-              (a1 (car args))
-              (a2 (cadr args)))
-          (let ((t1->t2 (get-coercion type1 type2))
-                (t2->t1 (get-coercion type2 type1)))
-            (cond ((not (null? t1->t2))
-                   (list (t1->t2 a1) a2)) ; return args
-                  ((not (null? t2->t1))
-                   (list a1 (t2->t1 a2))) ; return args
-                  (else
-                   (error "No method for these types"
-                          (list type-tags))))))
-        (error "No method for these types"
-               (list type-tags)))))
-
-(define (try-coerce type args)
-  (if (pair? args)
-      (let ((arg (car args)))
-        (let ((proc (get-coercion (type-tag arg) type)))
-          (if (null? proc)
-              nil
-              (cons (proc arg) (try-coerce type (cdr args))))))
+      (if (= (length args) (length (try-coerce type-tags args)))
+          (try-coerce type-tags args)
+          (try-coerce (cdr type-tags) args))))
+          
+(define (try-coerce types args)
+  (if (pair? types)
+      (let ((type (car types)))
+        (if (pair? args)
+            (let ((arg (car args)))
+              (let ((proc (get-coercion (type-tag arg) type)))
+                (if (null? proc)
+                    nil
+                    (cons (proc arg) (try-coerce types (cdr args))))))
+            nil))
       nil))
 
 (define coercion-table '())
