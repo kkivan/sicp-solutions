@@ -3,21 +3,13 @@
 (require "dispatch-table.scm")
 (require "modules/sicp/sicp.rkt")
 (require "modules/sicp/rat.scm")
+(require "complex.scm")
 
 (define (equ? l r)
   (let ((result (apply-generic 'equ? l r)))
     (if (null? result)
         false
         result)))
-
-(define (make-complex-real-imag real imag)
-  (attach-tag 'complex (cons real imag)))
- 
-(define (real complex)
-  (car complex))
-
-(define (imag complex)
-  (cdr complex))
 
 (define (equal-complex? l r)
   (and (equ? (real l) (real r))
