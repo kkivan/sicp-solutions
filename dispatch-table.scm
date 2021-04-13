@@ -8,7 +8,9 @@
          type-tag
          contents
          put-coercion
+         get-coercion
          coerce
+         try-coerce
          dispatch-table)
 
 (define dispatch-table '())
@@ -75,6 +77,15 @@
                           (list type-tags))))))
         (error "No method for these types"
                (list type-tags)))))
+
+(define (try-coerce type args)
+  (if (pair? args)
+      (let ((arg (car args)))
+        (let ((proc (get-coercion (type-tag arg) type)))
+          (if (null? proc)
+              nil
+              (cons (proc arg) (try-coerce type (cdr args))))))
+      nil))
 
 (define coercion-table '())
 
