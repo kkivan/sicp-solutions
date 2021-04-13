@@ -8,6 +8,7 @@
          type-tag
          contents
          put-coercion
+         coerce
          dispatch-table)
 
 (define dispatch-table '())
@@ -54,23 +55,26 @@
     (let ((proc (get op type-tags)))
       (if (not (null? proc))
           (apply proc (map contents args))
-          (if (= (length args) 2)
-              (let ((type1 (car type-tags))
-                    (type2 (cadr type-tags))
-                    (a1 (car args))
-                    (a2 (cadr args)))
-                (let ((t1->t2 (get-coercion type1 type2))
-                      (t2->t1 (get-coercion type2 type1)))
-                  (cond ((not (null? t1->t2))
-                         (apply-generic op (t1->t2 a1) a2))
-                        ((not (null? t2->t1))
-                         (apply-generic op a1 (t2->t1 a2)))
-                        (else
-                         (error "No method for these types"
-                                (list op type-tags))))))
-              (error "No method for these types"
-                     (list op type-tags)))))))
+          (apply apply-generic (cons op (coerce args)))))))
 
+(define (coerce args)
+  (let ((type-tags (map type-tag args)))
+    (if (= (length args) 2)
+        (let ((type1 (car type-tags))
+              (type2 (cadr type-tags))
+              (a1 (car args))
+              (a2 (cadr args)))
+          (let ((t1->t2 (get-coercion type1 type2))
+                (t2->t1 (get-coercion type2 type1)))
+            (cond ((not (null? t1->t2))
+                   (list (t1->t2 a1) a2)) ; return args
+                  ((not (null? t2->t1))
+                   (list a1 (t2->t1 a2))) ; return args
+                  (else
+                   (error "No method for these types"
+                          (list type-tags))))))
+        (error "No method for these types"
+               (list type-tags)))))
 
 (define coercion-table '())
 
@@ -90,6 +94,7 @@
     (if (pair? rows)
         (coer-proc (car rows))
         nil)))
+
 
 
 

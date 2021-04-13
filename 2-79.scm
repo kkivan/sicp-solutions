@@ -31,11 +31,11 @@
 
 (put 'equ? '(rat rat) equal-rat?)
 (put 'equ? '(complex complex) equal-complex?)
-;(put 'equ? '(scheme-number scheme-number) =)
+(put 'equ? '(scheme-number scheme-number) =)
 
 (define (make-rat num den)
   (attach-tag 'rat (cons num den)))
-(equ? 1 1)
+
 (assert (equal-rat? (cons 1 2)
                     (cons 1 2))
         true)
@@ -68,6 +68,19 @@
 
 (put-coercion 'scheme-number 'rat (lambda (num) (make-rat num 1)))
 
+(assert (coerce (list (make-rat 1 2)
+                      (make-complex-real-imag 1 2)))
+        (list (make-complex-real-imag (make-rat 1 2) 0)
+              (make-complex-real-imag 1 2)))
+
 (assert (equ? (make-rat 1 2)
               (make-complex-real-imag 1 2))
         false)
+
+(assert (equ? (make-complex-real-imag 1 2)
+              (make-rat 1 2))
+        false)
+
+
+
+
