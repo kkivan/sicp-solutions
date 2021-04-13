@@ -3,7 +3,9 @@
 (provide nil
          flatmap
          square
-         assert)
+         assert
+         fold-right
+         repeated)
 
 (define nil '())
 
@@ -15,6 +17,11 @@
       (op (car sequence)
           (fold-right op initial (cdr sequence)))))
 (define accumulate fold-right)
+
+(define (repeated x n)
+  (if (= n 0)
+      nil
+      (cons x (repeated x (- n 1)))))
 
 (define (flatmap proc seq)
   (accumulate append nil (map proc seq)))
