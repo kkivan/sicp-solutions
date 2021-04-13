@@ -2,19 +2,17 @@
 
 (require "dispatch-table.scm")
 (require "modules/sicp/sicp.rkt")
+(require "modules/sicp/rat.scm")
 
 (define (equ? l r)
   (let ((result (apply-generic 'equ? l r)))
     (if (null? result)
         false
         result)))
-  
-(define (num rat)
-  (car rat))
 
-(define (denom rat)
-  (cdr rat))
-
+(define (make-complex-real-imag real imag)
+  (attach-tag 'complex (cons real imag)))
+ 
 (define (real complex)
   (car complex))
 
@@ -26,15 +24,12 @@
        (equ? (imag l) (imag r))))
 
 (define (equal-rat? l r)
-  (and (equ? (num l) (num r))
+  (and (equ? (numer l) (numer r))
        (equ? (denom l) (denom r))))
 
 (put 'equ? '(rat rat) equal-rat?)
 (put 'equ? '(complex complex) equal-complex?)
 (put 'equ? '(scheme-number scheme-number) =)
-
-(define (make-rat num den)
-  (attach-tag 'rat (cons num den)))
 
 (assert (equal-rat? (cons 1 2)
                     (cons 1 2))
@@ -43,9 +38,6 @@
 (assert (equal-rat? (cons 2 3)
                     (cons 1 2))
         false)
-
-(define (make-complex-real-imag real imag)
-  (attach-tag 'complex (cons real imag)))
 
 (assert (equal-complex? (cons 1 2)
                         (cons 1 2))
