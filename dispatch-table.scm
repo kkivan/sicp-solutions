@@ -99,12 +99,14 @@
   (cdr coer))
 
 (define (get-coercion t1 t2)
-  (let ((rows (filter (lambda (row)
-                        (equal? (list t1 t2) (coer-types row)))
-                      coercion-table)))
-    (if (pair? rows)
-        (coer-proc (car rows))
-        nil)))
+  (if (eq? t1 t2)
+      (lambda (x) x)
+      (let ((rows (filter (lambda (row)
+                            (equal? (list t1 t2) (coer-types row)))
+                          coercion-table)))
+        (if (pair? rows)
+            (coer-proc (car rows))
+            nil))))
 
 
 
