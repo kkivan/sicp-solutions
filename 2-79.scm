@@ -75,3 +75,6 @@
 (assert (raise (make-rat 2 1))
         (make-complex-real-imag (make-rat 2 1) 0))
 
+(assert (raise (make-complex-real-imag 1 0))
+        nil)
+
