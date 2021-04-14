@@ -6,7 +6,8 @@
          assert
          fold-right
          repeated
-         memq)
+         memq
+         all-satisfy)
 
 (define nil '())
 
@@ -43,4 +44,9 @@
   (cond ((null? x) false)
         ((eq? item (car x)) x)
         (else (memq item (cdr x)))))
+
+(define (all-satisfy predicate list)
+  (cond ((null? list) true)
+        ((predicate (car list)) (all-satisfy predicate (cdr list)))
+        (else false)))
 

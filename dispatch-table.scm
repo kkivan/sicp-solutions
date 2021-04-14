@@ -13,6 +13,9 @@
          try-coerce
          dispatch-table
          raise-type
+         higher-type?
+         try-up-cast
+         up-cast
          raise)
 
 (define dispatch-table '())
@@ -59,7 +62,7 @@
     (let ((proc (get op type-tags)))
       (if (not (null? proc))
           (apply proc (map contents args))
-          (apply apply-generic (cons op (coerce args)))))))
+          (apply apply-generic (cons op (up-cast args)))))))
 
 (define (coerce args)
   (let ((type-tags (map type-tag args)))
@@ -115,6 +118,29 @@
         nil
         (car up-types))))
 
+(define (higher-type? t1 t2)
+  (< (length (memq t1 types-tower))
+     (length (memq t2 types-tower))))
 
-
-
+(define (up-cast args)
+  (let ((first-type (type-tag (car args))))
+    (if (all-satisfy (lambda (x)
+                       (eq? (type-tag x) first-type))
+                     args)
+        args
+        (up-cast (try-up-cast args)))))
+ 
+  
+(define (try-up-cast args)
+  (if (not (null? (cdr args)))
+      (let ((first (car args))
+            (second (cadr args)))
+        (cond ((eq? (type-tag first)
+                    (type-tag second)) (cons first (try-up-cast (cdr args))))
+              ((higher-type? (type-tag first)
+                             (type-tag second)) (try-up-cast (cons first
+                                                                   (cons (raise second)
+                                                                         (cddr args)))))
+              (else (try-up-cast (cons (raise first)
+                                       (cdr args))))))
+      args))

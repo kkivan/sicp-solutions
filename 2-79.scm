@@ -78,3 +78,35 @@
 (assert (raise (make-complex-real-imag 1 0))
         nil)
 
+(assert (all-satisfy (lambda (x) (> x 1))
+                     '(2 3 4 5))
+        true)
+
+(assert (all-satisfy (lambda (x) (< x 5))
+                     '(2 3 4 5))
+        false)
+  
+(assert (try-up-cast '(1 2 3))
+        '(1 2 3))
+
+(assert (try-up-cast (list (make-rat 1 2) 3))
+        (list (make-rat 1 2) (make-rat 3 1)))
+
+(assert (up-cast (list 1
+                       (make-rat 1 2)
+                       (make-complex-real-imag 1 2)))
+        (list (make-complex-real-imag (make-rat 1 1) 0)
+              (make-complex-real-imag (make-rat 1 2) 0)
+              (make-complex-real-imag 1 2)))
+
+
+(assert (up-cast (list (make-complex-real-imag 1 2)
+                       (make-rat 3 4)
+                       4))
+        (list (make-complex-real-imag 1 2)
+              (make-complex-real-imag (make-rat 3 4) 0)
+              (make-complex-real-imag (make-rat 4 1) 0)))
+
+
+
+
