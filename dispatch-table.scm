@@ -11,7 +11,9 @@
          get-coercion
          coerce
          try-coerce
-         dispatch-table)
+         dispatch-table
+         raise-type
+         raise)
 
 (define dispatch-table '())
 
@@ -97,6 +99,21 @@
         (if (pair? rows)
             (coer-proc (car rows))
             nil))))
+
+(define types-tower '(scheme-number rat complex))
+
+(define (raise x)
+  (let ((from (type-tag x))
+        (to (raise-type (type-tag x))))
+    (if (null? to)
+        nil
+        ((get-coercion from to) x))))
+
+(define (raise-type x)
+  (let ((up-types (cdr (memq x types-tower))))
+    (if (null? up-types)
+        nil
+        (car up-types))))
 
 
 

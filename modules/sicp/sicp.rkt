@@ -5,7 +5,8 @@
          square
          assert
          fold-right
-         repeated)
+         repeated
+         memq)
 
 (define nil '())
 
@@ -37,4 +38,9 @@
 (define (print arg)
   (display arg)
   (newline))
+
+(define (memq item x)
+  (cond ((null? x) false)
+        ((eq? item (car x)) x)
+        (else (memq item (cdr x)))))
 

@@ -65,6 +65,13 @@
               (make-rat 1 2))
         false)
 
+(assert (equ? (make-rat 3 1)
+              3)
+        true)
 
+(assert (raise 2)
+        (make-rat 2 1))
 
+(assert (raise (make-rat 2 1))
+        (make-complex-real-imag (make-rat 2 1) 0))
 
