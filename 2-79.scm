@@ -35,7 +35,7 @@
                         (cons 1 2))
         true)
 
-(assert (equal-complex? (cons 1 3)
+(assert (equal-complex? (cons 2 3)
                         (cons 1 2))
         false)
 
@@ -52,10 +52,23 @@
 
 (put-coercion 'scheme-number 'rat (lambda (num) (make-rat num 1)))
 
+(put-coercion 'complex 'rat (lambda (comp)
+                              (make-rat (real comp) 1)))
+
+(put-coercion 'rat 'scheme-number (lambda (rat)
+                                    (numer rat)))
+
 (assert (coerce (list (make-rat 1 2)
                       (make-complex-real-imag 1 2)))
         (list (make-complex-real-imag (make-rat 1 2) 0)
               (make-complex-real-imag 1 2)))
+
+((get-coercion 'complex 'rat) (cons 1 2))
+
+
+(assert (equ? (make-complex-real-imag 1 2)
+              (make-complex-real-imag 2 2))
+        false)
 
 (assert (equ? (make-rat 1 2)
               (make-complex-real-imag 1 2))
@@ -107,6 +120,7 @@
               (make-complex-real-imag (make-rat 3 4) 0)
               (make-complex-real-imag (make-rat 4 1) 0)))
 
-
+(assert (real (make-complex-real-imag 1 2))
+        1)
 
 
