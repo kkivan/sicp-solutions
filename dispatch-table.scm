@@ -16,6 +16,7 @@
          higher-type?
          try-up-cast
          up-cast
+         reversed-types-tower
          raise)
 
 (define dispatch-table '())
@@ -104,6 +105,7 @@
             nil))))
 
 (define types-tower '(scheme-number rat complex))
+(define reversed-types-tower (reverse types-tower))
 
 (define (raise x)
   (let ((from (type-tag x))
