@@ -10,7 +10,6 @@
   (attach-tag 'complex (cons mag
                              ang)))
 
-
 (define (sine x)
   (apply-generic 'sine x))
 
@@ -24,16 +23,16 @@
 (put 'cosine '(rat) (lambda (x) (cos (/ (numer x) (denom x)))))
  
 (define (real complex)
-  (cosine (car (contents complex))))
+  (cosine (angle (contents complex))))
 
 (define (imag complex)
-  (sine (cdr (contents complex))))
+  (sine (magnitude (contents complex))))
 
 (define (angle complex)
   (car complex))
 
 (define (magnitude complex)
-  (cadr complex))
+  (cdr complex))
 
 (define a (make-complex-mag-ang (make-rat 1 2) 2))
 (define b (make-complex-mag-ang 0.5 2))
