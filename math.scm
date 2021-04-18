@@ -6,7 +6,8 @@
 (provide add
          sub
          div
-         mul)
+         mul
+         =zero?)
 
 (define (add x y)
   (apply-generic 'add x y))
@@ -19,3 +20,6 @@
 
 (define (mul x y)
   (apply-generic 'mul x y))
+
+(define (=zero? x)
+  (apply-generic '=zero? x))

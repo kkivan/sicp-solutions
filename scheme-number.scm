@@ -8,4 +8,5 @@
   (put 'add (list 'scheme-number 'scheme-number) +)
   (put 'sub (list 'scheme-number 'scheme-number) -)
   (put 'div (list 'scheme-number 'scheme-number) /)
-  (put 'mul (list 'scheme-number 'scheme-number) *))
+  (put 'mul (list 'scheme-number 'scheme-number) *)
+  (put '=zero? (list 'scheme-number 'scheme-number) (lambda (x) (= x 0))))
