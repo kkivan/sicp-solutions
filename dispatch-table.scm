@@ -22,6 +22,7 @@
 (define dispatch-table '())
 
 (define (put op type proc)
+  
   (set! dispatch-table (cons (list op type proc) dispatch-table)))
 
 (define (dispatch-op row) (car row))
@@ -63,7 +64,7 @@
     (let ((proc (get op type-tags)))
       (if (not (null? proc))
           (apply proc (map contents args))
-          (apply apply-generic (cons op (up-cast args)))))))
+          (error "No proc " op "registered for types" type-tags)))))
 
 (define (coerce args)
   (let ((type-tags (map type-tag args)))
