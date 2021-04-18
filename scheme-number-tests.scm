@@ -18,8 +18,8 @@
 (assert (mul 5 5)
         25)
 
-(assert (zero? 0)
+(assert (=zero? 0)
         true)
 
-(assert (zero? 5)
+(assert (=zero? 5)
         false)
