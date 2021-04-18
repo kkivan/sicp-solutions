@@ -5,8 +5,12 @@
 (provide install-package-scheme-number)
 
 (define (install-package-scheme-number)
-  (put 'add (list 'scheme-number 'scheme-number) +)
-  (put 'sub (list 'scheme-number 'scheme-number) -)
-  (put 'div (list 'scheme-number 'scheme-number) /)
-  (put 'mul (list 'scheme-number 'scheme-number) *)
-  (put '=zero? (list 'scheme-number 'scheme-number) (lambda (x) (= x 0))))
+  (put 'add '(scheme-number scheme-number) +)
+  
+  (put 'sub '(scheme-number scheme-number) -)
+  
+  (put 'div '(scheme-number scheme-number) /)
+  
+  (put 'mul '(scheme-number scheme-number) *)
+  
+  (put '=zero? '(scheme-number) (lambda (x) (= x 0))))
