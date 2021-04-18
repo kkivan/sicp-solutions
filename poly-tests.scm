@@ -19,4 +19,7 @@
              (make-poly 'x '((1 2) (3 4))))
         (make-poly 'x '((1 4) (3 8))))
 
+(assert (=zero? (make-poly 'x '((1 0) (3 0))))
+        true)
+
         

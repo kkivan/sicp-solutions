@@ -2,6 +2,7 @@
 
 (require "dispatch-table.scm")
 (require "math.scm")
+(require "modules/sicp/sicp.rkt")
 
 (provide install-polynomial-package
          make-poly)
@@ -89,7 +90,7 @@
     (make-poly (variable p1)
                (mul-terms (term-list p1)
                           (term-list p2))))
-  
+ 
   ;; interface to rest of the system
   (define (tag p) (attach-tag 'polynomial p))
   
@@ -102,5 +103,9 @@
   (put 'make '(polynomial)
        (lambda (args)
          (tag (make-poly (car args) (cadr args)))))
+
+  (put '=zero? '(polynomial)
+       (lambda (p)
+         (all-satisfy =zero? (map coeff (term-list p)))))
   
   'done)
