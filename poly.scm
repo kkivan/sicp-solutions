@@ -21,7 +21,9 @@
   ;; internal procedures
   ;; representation of poly
   (define (make-poly variable term-list)
-    (cons variable term-list))
+    (cons variable (filter (lambda (term)
+                             (not (=zero? (coeff term))))
+                           term-list)))
 
   (define (same-variable? v1 v2)
     (and (variable? v1) (variable? v2) (eq? v1 v2)))
@@ -107,10 +109,15 @@
   (put '=zero? '(polynomial)
        (lambda (p)
          (all-satisfy =zero? (map coeff (term-list p)))))
+  
   (put 'negate '(polynomial)
        (lambda (p)
          (tag (make-poly (variable p) (map (lambda (term)
-                (make-term (order term) (negate (coeff term))))
-                 (term-list p))))))
+                                             (make-term (order term) (negate (coeff term))))
+                                           (term-list p))))))
+
+  (put 'sub '(polynomial polynomial)
+       (lambda (l r)
+         (add (tag l) (negate (tag r)))))
   
   'done)
