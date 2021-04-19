@@ -108,7 +108,7 @@
 
   (put '=zero? '(polynomial)
        (lambda (p)
-         (all-satisfy =zero? (map coeff (term-list p)))))
+         (null? (term-list p))))
   
   (put 'negate '(polynomial)
        (lambda (p)
