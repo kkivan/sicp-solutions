@@ -23,3 +23,6 @@
 
 (assert (=zero? 5)
         false)
+
+(assert (negate 5)
+        -5)
