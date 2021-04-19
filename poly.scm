@@ -107,5 +107,10 @@
   (put '=zero? '(polynomial)
        (lambda (p)
          (all-satisfy =zero? (map coeff (term-list p)))))
+  (put 'negate '(polynomial)
+       (lambda (p)
+         (tag (make-poly (variable p) (map (lambda (term)
+                (make-term (order term) (negate (coeff term))))
+                 (term-list p))))))
   
   'done)
