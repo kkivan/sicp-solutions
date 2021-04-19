@@ -13,4 +13,7 @@
   
   (put 'mul '(scheme-number scheme-number) *)
   
-  (put '=zero? '(scheme-number) (lambda (x) (= x 0))))
+  (put '=zero? '(scheme-number) (lambda (x) (= x 0)))
+
+  (put 'negate '(scheme-number) (lambda (x) (- 0 x)))
+  )

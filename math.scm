@@ -7,7 +7,8 @@
          sub
          div
          mul
-         =zero?)
+         =zero?
+         negate)
 
 (define (add x y)
   (apply-generic 'add x y))
@@ -23,3 +24,6 @@
 
 (define (=zero? x)
   (apply-generic '=zero? x))
+
+(define (negate x)
+  (apply-generic 'negate x))
