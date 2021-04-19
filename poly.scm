@@ -14,6 +14,8 @@
 
 (define (term-list p) (cdr p))
 
+;"We will assume that term lists are represented as lists of terms,
+;arranged from highest-order to lowest-order term"
 (define (make-poly var terms)
   (apply-generic 'make (list 'polynomial var terms)))
                  
