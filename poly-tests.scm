@@ -41,7 +41,6 @@
     (assert (sub (make-poly 'x '())
                 (make-poly 'x '((3 4)(1 2))))
            (make-poly 'x '((3 -4)(1 -2))))
-   
    )
   )
 
