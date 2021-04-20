@@ -3,7 +3,7 @@
 (require "modules/sicp/sicp.rkt")
 (require "dispatch-table.scm")
 (require "math.scm")
-(require "poly.scm")
+(require "poly-dense.scm")
 (require "scheme-number.scm")
 
 (install-polynomial-package)
@@ -16,10 +16,10 @@
 
    (assert (term-list (contents (make-poly 'x '(4 0 2 0))))
            '(4 0 2 0))
-
+   
    (assert (add (make-poly 'x '(0 4 0 2 0))
                 (make-poly 'x '(4 0 2 0)))
-           (make-poly 'x '(8 0 4 0)))
+           (make-poly 'x '(0 8 0 4 0)))
    
    (assert (add (make-poly 'x '(4 0 2 0))
                 (make-poly 'x '(4 2 0 0)))
@@ -33,14 +33,12 @@
 
    (assert (sub (make-poly 'x '(4 0 2 0))
                 (make-poly 'x '(4 0 2 0)))
-           (make-poly 'x '()))
+           (make-poly 'x '(0 0 0 0)))
 
-    (assert (sub (make-poly 'x '())
+   (assert (sub (make-poly 'x '())
                 (make-poly 'x '(4 0 2 0)))
            (make-poly 'x '(-4 0 -2 0)))
    )
   )
    
-  
 (run-poly-tests)
-
