@@ -96,7 +96,6 @@
                (mul-terms (term-list p1)
                           (term-list p2))))
  
-  ;; interface to rest of the system
   (define (tag p) (attach-tag 'polynomial p))
   
   (put 'add '(polynomial polynomial)
@@ -109,7 +108,7 @@
        (lambda (args)
          (tag (make-poly (car args) (cadr args)))))
 
-  (put '=zero? '(polynomial) ;; make generic
+  (put '=zero? '(polynomial)
        (lambda (p)
          (all-satisfy =zero?
                       (contents (term-list p)))))
