@@ -70,10 +70,10 @@
            (mul-term-by-all-terms t1 (rest-terms L))))))
 
   (define (adjoin-term term term-list)
-    (let ((tag (type-tag term-list)))
-      (if (=zero? (coeff term))
-          term-list
-          (attach-tag tag (cons term (contents term-list))))))
+    (transform (lambda (list)
+                 (if (=zero? (coeff term))
+                     list
+                     (cons term list))) term-list))
 
   (define (the-empty-termlist) ('()))
 
@@ -114,14 +114,19 @@
          (all-satisfy =zero?
                       (contents (term-list p)))))
   
-  (put 'negate '(polynomial) ;; add negate for term-list
+  (put 'negate '(polynomial)
        (lambda (p)
          (tag (make-poly (variable p)
-                         (attach-tag 'sparse
-                                     (map (lambda (term)
-                                            (make-term (order term)
-                                                       (negate (coeff term))))
-                                          (contents (term-list p))))))))
+                         (transform (lambda (list)
+                                      (map (lambda (term)
+                                             (make-term (order term)
+                                                        (negate (coeff term))))
+                                           list))
+                                    (term-list p))))))
+
+  (define (transform proc arg)
+    (let ((tag (type-tag arg)))
+      (attach-tag tag (proc (contents arg)))))              
 
   (put 'sub '(polynomial polynomial)
        (lambda (l r)
