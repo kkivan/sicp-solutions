@@ -11,39 +11,64 @@
 
 (define (run-poly-tests)
   (list 
-   (assert (variable (contents (make-poly 'x '((3 4)(1 2)))))
+   (assert (variable (contents (make-poly 'x
+                                          (make-sparse-term-list '((3 4)(1 2))))))
            'x)
 
-   (assert (term-list (contents (make-poly 'x '((3 4)(1 2)))))
-           '((3 4)(1 2)))
+   (assert (term-list (contents (make-poly 'x
+                                           (make-sparse-term-list '((3 4)(1 2))))))
+           '(sparse (3 4)(1 2)))
 
-   (assert (add (make-poly 'x '((4 0)(3 4)(1 2)))
-                (make-poly 'x '((3 4)(1 2))))
-           (make-poly 'x '((3 8)(1 4))))
+   (assert (add (make-poly 'x
+                           (make-sparse-term-list '()))
+                (make-poly 'x
+                           (make-sparse-term-list '())))
+           (make-poly 'x
+                      (make-sparse-term-list '())))
+
+   (assert (add (make-poly 'x
+                           (make-sparse-term-list '((3 4) (1 2) )))
+                (make-poly 'x
+                           (make-sparse-term-list '((3 4) (2 2) ))))
+           (make-poly 'x
+                      (make-sparse-term-list '((3 8) (2 2) (1 2)))))
+
+   (assert (add (make-poly 'x
+                           (make-sparse-term-list '((4 0)(3 4)(1 2))))
+                (make-poly 'x
+                           (make-sparse-term-list '((3 4)(1 2)))))
+           (make-poly 'x
+                      (make-sparse-term-list '((3 8)(1 4)))))
    
-   (assert (add (make-poly 'x '((3 4) (1 2) ))
-                (make-poly 'x '((3 4) (2 2) )))
-           (make-poly 'x '((3 8) (2 2) (1 2))))
-
-   (assert (=zero? (make-poly 'x '((3 0)(1 0))))
+   (assert (=zero? (make-poly 'x
+                              (make-sparse-term-list '((3 0)(1 0)))))
            true)
    
-   (assert (negate (make-poly 'x '((3 4)(1 2))))
-           (make-poly 'x '((3 -4)(1 -2))))
+   (assert (negate (make-poly 'x
+                              (make-sparse-term-list '((3 4)(1 2)))))
+           (make-poly 'x
+                      (make-sparse-term-list '((3 -4)(1 -2)))))
 
-   (assert (make-poly 'x '((3 0)(1 0)))
-           (make-poly 'x '()))
+   (assert (make-poly 'x
+                      (make-sparse-term-list '((3 0)(1 0))))
+           (make-poly 'x
+                      (make-sparse-term-list '())))
 
-   (assert (sub (make-poly 'x '((3 4)(1 2)))
-                (make-poly 'x '((3 4)(1 2))))
-           (make-poly 'x '()))
+   (assert (sub (make-poly 'x
+                           (make-sparse-term-list '((3 4)(1 2))))
+                (make-poly 'x
+                           (make-sparse-term-list '((3 4)(1 2)))))
+           (make-poly 'x
+                      (make-sparse-term-list '())))
 
-    (assert (sub (make-poly 'x '())
-                (make-poly 'x '((3 4)(1 2))))
-           (make-poly 'x '((3 -4)(1 -2))))
+   (assert (sub (make-poly 'x
+                           (make-sparse-term-list '()))
+                (make-poly 'x
+                           (make-sparse-term-list '((3 4)(1 2)))))
+           (make-poly 'x
+                      (make-sparse-term-list '((3 -4)(1 -2)))))
    )
   )
-
 
 (run-poly-tests)
 

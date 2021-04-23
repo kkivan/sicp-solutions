@@ -5,8 +5,7 @@
 (require "modules/sicp/sicp.rkt")
 
 (provide install-polynomial-package
-         make-poly
-         make-sparse-term-list)
+         make-poly)
 
 (provide term-list
          variable)
@@ -14,23 +13,6 @@
 (define (variable p) (car p))
 
 (define (term-list p) (cdr p))
-
-;; Term
-(define (make-term order coeff)
-  (list order coeff))
-
-(define (order term) (car term))
-
-(define (coeff term) (cadr term))
-
-;; Term-lists
-(define (make-sparse-term-list terms)
-  (attach-tag 'sparse (filter (lambda (term)
-                                (not (=zero? (coeff term))))
-                              terms)))
-
-(define (make-dense-term-list terms)
-  (attach-tag 'dense terms))
 
 ;"We will assume that term lists are represented as lists of terms,
 ;arranged from highest-order to lowest-order term"
@@ -41,7 +23,9 @@
   ;; internal procedures
   ;; representation of poly
   (define (make-poly variable term-list)
-    (cons variable term-list))
+    (cons variable (filter (lambda (term)
+                             (not (=zero? (coeff term))))
+                           term-list)))
 
   (define (same-variable? v1 v2)
     (and (variable? v1) (variable? v2) (eq? v1 v2)))
@@ -82,26 +66,24 @@
                       (mul (coeff t1) (coeff t2)))
            (mul-term-by-all-terms t1 (rest-terms L))))))
 
-  (define (adjoin-term term term-list) ; to generic
+  (define (adjoin-term term term-list)
     (if (=zero? (coeff term))
         term-list
-        (attach-tag 'sparse (cons term (contents term-list)))))
+        (cons term term-list)))
 
-  (define (the-empty-termlist) (attach-tag 'sparse '()))
+  (define (the-empty-termlist) '())
 
-  (define (first-term term-list)
-    (apply-generic 'first-term term-list))
-  
-  (put 'first-term '(sparse) (lambda (list)
-                               (car list)))
+  (define (first-term term-list) (car term-list))
 
-  (define (rest-terms term-list) (apply-generic 'rest-terms term-list))
+  (define (rest-terms term-list) (cdr term-list))
 
-  (put 'rest-terms '(sparse) (lambda (list)
-                               (attach-tag 'sparse (cdr list))))
+  (define (empty-termlist? term-list) (null? term-list))
 
-  (define (empty-termlist? term-list) ; to generic
-    (null? (cdr term-list))) 
+  (define (make-term order coeff) (list order coeff))
+
+  (define (order term) (car term))
+
+  (define (coeff term) (cadr term))
 
   (define (add-poly p1 p2)
     (make-poly (variable p1)
@@ -126,15 +108,15 @@
        (lambda (args)
          (tag (make-poly (car args) (cadr args)))))
 
-  (put '=zero? '(polynomial) ;; make generic
+  (put '=zero? '(polynomial)
        (lambda (p)
-         (all-satisfy =zero? (contents (term-list p)))))
+         (null? (term-list p))))
   
-  (put 'negate '(polynomial) ;; add negate for term-list
+  (put 'negate '(polynomial)
        (lambda (p)
-         (tag (make-poly (variable p) (attach-tag 'sparse (map (lambda (term)
-                                                                 (make-term (order term) (negate (coeff term))))
-                                                               (contents (term-list p))))))))
+         (tag (make-poly (variable p) (map (lambda (term)
+                                             (make-term (order term) (negate (coeff term))))
+                                           (term-list p))))))
 
   (put 'sub '(polynomial polynomial)
        (lambda (l r)
