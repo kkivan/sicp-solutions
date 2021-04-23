@@ -91,10 +91,11 @@
                       (mul (coeff t1) (coeff t2)))
            (mul-term-by-all-terms t1 (rest-terms L))))))
 
-  (define (adjoin-term term term-list) ; to generic
-    (if (=zero? (coeff term))
-        term-list
-        (attach-tag 'sparse (cons term (contents term-list)))))
+  (define (adjoin-term term term-list)
+    (let ((tag (type-tag term-list)))
+      (if (=zero? (coeff term))
+          term-list
+          (attach-tag tag (cons term (contents term-list))))))
 
   (define (the-empty-termlist) ('()))
 
