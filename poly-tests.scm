@@ -5,6 +5,7 @@
 (require "math.scm")
 (require "poly.scm")
 (require "scheme-number.scm")
+(require "sparse-term-list.scm")
 
 (install-polynomial-package)
 (install-package-scheme-number)

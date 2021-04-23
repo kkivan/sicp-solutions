@@ -3,6 +3,7 @@
 (require "dispatch-table.scm")
 (require "math.scm")
 (require "modules/sicp/sicp.rkt")
+(require "term.scm")
 
 (provide install-polynomial-package
          make-poly)
@@ -14,20 +15,7 @@
 
 (define (term-list p) (cdr p))
 
-;; Term
-(define (make-term order coeff)
-  (list order coeff))
-
-(define (order term) (car term))
-
-(define (coeff term) (cadr term))
-
 ;; Term-lists
-(define (make-sparse-term-list terms)
-  (attach-tag 'sparse (filter (lambda (term)
-                                (not (=zero? (coeff term))))
-                              terms)))
-
 (define (make-dense-term-list terms)
   (attach-tag 'dense terms))
 
@@ -35,17 +23,7 @@
 ;arranged from highest-order to lowest-order term"
 (define (make-poly var terms)
   (apply-generic 'make (list 'polynomial var terms)))
-
-(provide install-sparse-term-list-package
-         make-sparse-term-list)
-         
-(define (install-sparse-term-list-package)
-  (put 'first-term '(sparse) (lambda (list)
-                               (car list)))
-  (put 'rest-terms '(sparse) (lambda (list)
-                               (attach-tag 'sparse (cdr list))))
-  )
-                 
+               
 (define (install-polynomial-package)
   ;; internal procedures
   ;; representation of poly
