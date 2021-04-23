@@ -8,6 +8,7 @@
 
 (install-polynomial-package)
 (install-package-scheme-number)
+(install-sparse-term-list-package)
 
 (define (run-poly-tests)
   (list 

@@ -5,8 +5,7 @@
 (require "modules/sicp/sicp.rkt")
 
 (provide install-polynomial-package
-         make-poly
-         make-sparse-term-list)
+         make-poly)
 
 (provide term-list
          variable)
@@ -36,6 +35,16 @@
 ;arranged from highest-order to lowest-order term"
 (define (make-poly var terms)
   (apply-generic 'make (list 'polynomial var terms)))
+
+(provide install-sparse-term-list-package
+         make-sparse-term-list)
+         
+(define (install-sparse-term-list-package)
+  (put 'first-term '(sparse) (lambda (list)
+                               (car list)))
+  (put 'rest-terms '(sparse) (lambda (list)
+                               (attach-tag 'sparse (cdr list))))
+  )
                  
 (define (install-polynomial-package)
   ;; internal procedures
@@ -92,14 +101,9 @@
   (define (first-term term-list)
     (apply-generic 'first-term term-list))
   
-  (put 'first-term '(sparse) (lambda (list)
-                               (car list)))
-
   (define (rest-terms term-list) (apply-generic 'rest-terms term-list))
 
-  (put 'rest-terms '(sparse) (lambda (list)
-                               (attach-tag 'sparse (cdr list))))
-
+ 
   (define (empty-termlist? term-list) ; to generic
     (null? (cdr term-list))) 
 
@@ -128,13 +132,17 @@
 
   (put '=zero? '(polynomial) ;; make generic
        (lambda (p)
-         (all-satisfy =zero? (contents (term-list p)))))
+         (all-satisfy =zero?
+                      (contents (term-list p)))))
   
   (put 'negate '(polynomial) ;; add negate for term-list
        (lambda (p)
-         (tag (make-poly (variable p) (attach-tag 'sparse (map (lambda (term)
-                                                                 (make-term (order term) (negate (coeff term))))
-                                                               (contents (term-list p))))))))
+         (tag (make-poly (variable p)
+                         (attach-tag 'sparse
+                                     (map (lambda (term)
+                                            (make-term (order term)
+                                                       (negate (coeff term))))
+                                          (contents (term-list p))))))))
 
   (put 'sub '(polynomial polynomial)
        (lambda (l r)
