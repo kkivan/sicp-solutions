@@ -96,7 +96,7 @@
         term-list
         (attach-tag 'sparse (cons term (contents term-list)))))
 
-  (define (the-empty-termlist) (attach-tag 'sparse '()))
+  (define (the-empty-termlist) ('()))
 
   (define (first-term term-list)
     (apply-generic 'first-term term-list))
@@ -104,8 +104,8 @@
   (define (rest-terms term-list) (apply-generic 'rest-terms term-list))
 
  
-  (define (empty-termlist? term-list) ; to generic
-    (null? (cdr term-list))) 
+  (define (empty-termlist? term-list)
+    (null? (contents term-list))) 
 
   (define (add-poly p1 p2)
     (make-poly (variable p1)
