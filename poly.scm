@@ -15,10 +15,6 @@
 
 (define (term-list p) (cdr p))
 
-;; Term-lists
-(define (make-dense-term-list terms)
-  (attach-tag 'dense terms))
-
 ;"We will assume that term lists are represented as lists of terms,
 ;arranged from highest-order to lowest-order term"
 (define (make-poly var terms)
@@ -62,7 +58,7 @@
 
   (define (mul-term-by-all-terms t1 L)
     (if (empty-termlist? L)
-        (the-empty-termlist)
+        the-empty-termlist
         (let ((t2 (first-term L)))
           (adjoin-term
            (make-term (+ (order t1) (order t2))
@@ -75,7 +71,7 @@
                      list
                      (cons term list))) term-list))
 
-  (define (the-empty-termlist) ('()))
+  (define the-empty-termlist '())
 
   (define (first-term term-list)
     (apply-generic 'first-term term-list))
@@ -112,16 +108,25 @@
        (lambda (p)
          (all-satisfy =zero?
                       (contents (term-list p)))))
+
+  (define (fold-right-term-list op initial term-list)
+    (print term-list)
+    (if (empty-termlist? term-list)
+        initial
+        (op (first-term term-list)
+            (fold-right-term-list op initial (rest-terms term-list)))))
   
   (put 'negate '(polynomial)
        (lambda (p)
          (tag (make-poly (variable p)
-                         (transform (lambda (list)
-                                      (map (lambda (term)
-                                             (make-term (order term)
-                                                        (negate (coeff term))))
-                                           list))
-                                    (term-list p))))))
+                         (let ((tag (term-list p)))
+                         (fold-right-term-list (lambda (term list)
+                                                 
+                                                 (adjoin-term (make-term (order term)
+                                                                         (negate (coeff term)))
+                                                              list))
+                                               (attach-tag tag the-empty-termlist)
+                                               (term-list p)))))))
 
   (define (transform proc arg)
     (let ((tag (type-tag arg)))
