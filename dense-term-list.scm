@@ -24,5 +24,5 @@
   (put 'negate '(dense)
        (lambda (list)
          (attach-tag 'dense (map (lambda (coeff)
-                                   (- 0 coeff)) list))))
+                                   (negate coeff)) list))))
   )

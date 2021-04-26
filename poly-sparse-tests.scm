@@ -51,6 +51,9 @@
            (make-poly 'x
                       (make-sparse-term-list '((3 -4)(1 -2)))))
 
+   (assert (negate (make-sparse-term-list '()))
+           (make-sparse-term-list '()))
+                   
    (assert (make-poly 'x
                       (make-sparse-term-list '((3 0)(1 0))))
            (make-poly 'x
@@ -62,7 +65,7 @@
                            (make-sparse-term-list '((3 4)(1 2)))))
            (make-poly 'x
                       (make-sparse-term-list '())))
-
+   
    (assert (sub (make-poly 'x
                            (make-sparse-term-list '()))
                 (make-poly 'x

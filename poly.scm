@@ -56,7 +56,7 @@
 
   (define (mul-terms L1 L2)
     (if (empty-termlist? L1)
-        (the-empty-termlist)
+        the-empty-termlist
         (add-terms (mul-term-by-all-terms (first-term L1) L2)
                    (mul-terms (rest-terms L1) L2))))
 
