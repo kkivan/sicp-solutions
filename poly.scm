@@ -31,6 +31,10 @@
 
   (define (variable? x) (symbol? x))
 
+  (define (adjoin-term term term-list)
+  (let ((tag (type-tag term-list)))
+    (attach-tag tag ((get 'adjoin-term (list tag)) term (contents term-list)))))
+
   ;; representation of terms and term lists
   (define (add-terms L1 L2)
     (cond ((empty-termlist? L1) L2)
@@ -65,19 +69,12 @@
                       (mul (coeff t1) (coeff t2)))
            (mul-term-by-all-terms t1 (rest-terms L))))))
 
-  (define (adjoin-term term term-list)
-    (transform (lambda (list)
-                 (if (=zero? (coeff term))
-                     list
-                     (cons term list))) term-list))
-
   (define the-empty-termlist '())
 
   (define (first-term term-list)
     (apply-generic 'first-term term-list))
   
   (define (rest-terms term-list) (apply-generic 'rest-terms term-list))
-
  
   (define (empty-termlist? term-list)
     (null? (contents term-list))) 
@@ -108,30 +105,12 @@
        (lambda (p)
          (all-satisfy =zero?
                       (contents (term-list p)))))
-
-  (define (fold-right-term-list op initial term-list)
-    (print term-list)
-    (if (empty-termlist? term-list)
-        initial
-        (op (first-term term-list)
-            (fold-right-term-list op initial (rest-terms term-list)))))
-  
+    
   (put 'negate '(polynomial)
        (lambda (p)
          (tag (make-poly (variable p)
-                         (let ((tag (term-list p)))
-                         (fold-right-term-list (lambda (term list)
-                                                 
-                                                 (adjoin-term (make-term (order term)
-                                                                         (negate (coeff term)))
-                                                              list))
-                                               (attach-tag tag the-empty-termlist)
-                                               (term-list p)))))))
-
-  (define (transform proc arg)
-    (let ((tag (type-tag arg)))
-      (attach-tag tag (proc (contents arg)))))              
-
+                    (negate (term-list p))))))
+           
   (put 'sub '(polynomial polynomial)
        (lambda (l r)
          (add (tag l) (negate (tag r)))))
