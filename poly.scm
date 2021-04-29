@@ -32,8 +32,8 @@
   (define (variable? x) (symbol? x))
 
   (define (adjoin-term term term-list)
-  (let ((tag (type-tag term-list)))
-    (attach-tag tag ((get 'adjoin-term (list tag)) term (contents term-list)))))
+    (let ((tag (type-tag term-list)))
+      (attach-tag tag ((get 'adjoin-term (list tag)) term (contents term-list)))))
 
   ;; representation of terms and term lists
   (define (add-terms L1 L2)
@@ -88,9 +88,42 @@
     (make-poly (variable p1)
                (mul-terms (term-list p1)
                           (term-list p2))))
+
+  
+  (define (div-terms L1 L2)
+    (if (empty-termlist? L1)
+        (list the-empty-termlist the-empty-termlist)
+        (let ((t1 (first-term L1))
+              (t2 (first-term L2)))
+          (if (> (order t2) (order t1))
+              (list the-empty-termlist L1) ; return remainder
+              (let ((new-c (div (coeff t1) (coeff t2)))
+                    (new-o (- (order t1) (order t2))))
+                (let ((rest-of-result (div-terms (adjoin-term (make-term new-o
+                                                                         new-c)
+                                                              (rest-terms L1))
+                                                 L2)))
+                  (list (adjoin-term (make-term new-o
+                                                new-c)
+                                     (if (null? (car rest-of-result))
+                                         (attach-tag 'sparse the-empty-termlist)
+                                         (car rest-of-result)))
+                        (cadr rest-of-result))))))))
+  
+  (define (div-poly p1 p2)
+    (if (eq? (variable p1)
+             (variable p2))
+        (map (lambda (term-list)
+               (tag (make-poly (variable p1)
+                               term-list)))
+             (div-terms (term-list p1)
+                        (term-list p2)))
+        (error "polynomials with different variable")))
  
   (define (tag p) (attach-tag 'polynomial p))
-  
+
+  (put 'div '(polynomial polynomial) div-poly)
+                  
   (put 'add '(polynomial polynomial)
        (lambda (p1 p2) (tag (add-poly p1 p2))))
   
@@ -109,7 +142,7 @@
   (put 'negate '(polynomial)
        (lambda (p)
          (tag (make-poly (variable p)
-                    (negate (term-list p))))))
+                         (negate (term-list p))))))
            
   (put 'sub '(polynomial polynomial)
        (lambda (l r)

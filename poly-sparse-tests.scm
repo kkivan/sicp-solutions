@@ -73,7 +73,18 @@
            (make-poly 'x
                       (make-sparse-term-list '((3 -4)(1 -2)))))
    )
+
+  (assert (div (make-poly 'x
+                          (make-sparse-term-list '((5 1)(0 -1))))
+               (make-poly 'x
+                          (make-sparse-term-list '((2 1)(0 -1)))))
+          (list (make-poly 'x
+                           (make-sparse-term-list '((3 1)(1 1))))
+                (make-poly 'x
+                           (make-sparse-term-list '((1 1) (0 -1))))))
   )
 
 (run-poly-tests)
+
+
 
