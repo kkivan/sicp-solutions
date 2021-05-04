@@ -6,7 +6,8 @@
 (require "term.scm")
 
 (provide install-polynomial-package
-         make-poly)
+         make-poly
+         adjoin-term)
 
 (provide term-list
          variable)
@@ -14,6 +15,10 @@
 (define (variable p) (car p))
 
 (define (term-list p) (cdr p))
+
+(define (adjoin-term term term-list)
+    (let ((tag (type-tag term-list)))
+      (attach-tag tag ((get 'adjoin-term (list tag)) term (contents term-list)))))
 
 ;"We will assume that term lists are represented as lists of terms,
 ;arranged from highest-order to lowest-order term"
@@ -30,10 +35,6 @@
     (and (variable? v1) (variable? v2) (eq? v1 v2)))
 
   (define (variable? x) (symbol? x))
-
-  (define (adjoin-term term term-list)
-    (let ((tag (type-tag term-list)))
-      (attach-tag tag ((get 'adjoin-term (list tag)) term (contents term-list)))))
 
   ;; representation of terms and term lists
   (define (add-terms L1 L2)
@@ -106,7 +107,7 @@
                   (list (adjoin-term (make-term new-o
                                                 new-c)
                                      (if (null? (car rest-of-result))
-                                         (attach-tag 'sparse the-empty-termlist)
+                                         (attach-tag (type-tag L1) the-empty-termlist)
                                          (car rest-of-result)))
                         (cadr rest-of-result))))))))
   
