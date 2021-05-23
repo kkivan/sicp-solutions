@@ -26,7 +26,7 @@
       (cond ((eq? secret password) (reset-attempts)
                                    (cond ((eq? m 'withdraw) withdraw)
                                          ((eq? m 'deposit) deposit)
-                                         ((eq? m 'branch) (lambda (m password)
+                                         ((eq? m 'make-joint) (lambda (m password)
                                                             (dispatch m new-password password nil)))
                                          (else (error "Unknown request - MAKE-ACCOUNT"
                                                       m))))
@@ -35,6 +35,9 @@
     (dispatch m secret (car passwords) (if (null? (cdr passwords))
                                            nil
                                            (cadr passwords)))))
+
+(define (make-joint account orig-pass joint-pass)
+  (account 'make-joint orig-pass joint-pass))
 
 (define a (make-account 100 'qwerty))
 
@@ -53,12 +56,11 @@
 ((a 'deposit 'qwerty) 1000)
 ((a 'deposit 'qerty) 1000)
 
-(define b (a 'branch 'qwerty 'abc))
+(define b (make-joint a 'qwerty 'abc))
 
 ((b 'deposit 'admin) 100)
 ((a 'deposit 'qwerty) 1)
 ((b 'deposit 'abc) 100)
-
 
 ((a 'deposit 'nan) 100)
 ((a 'deposit 'nan) 100)
