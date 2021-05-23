@@ -58,10 +58,15 @@
 
 (define b (make-joint a 'qwerty 'abc))
 
-((b 'deposit 'admin) 100)
 ((a 'deposit 'qwerty) 1)
-((b 'deposit 'abc) 100)
 
+(assert ((b 'deposit 'abc) 100)
+        2161)
+
+(assert ((b 'deposit 'admin) 100)
+        "Wrong password – try again")
+
+; tests that number of attempts is not shared
 ((a 'deposit 'nan) 100)
 ((a 'deposit 'nan) 100)
 ((a 'deposit 'nan) 100)
