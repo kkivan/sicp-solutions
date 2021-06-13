@@ -7,7 +7,8 @@
          fold-right
          repeated
          memq
-         all-satisfy)
+         all-satisfy
+         mlist)
 
 (define nil '())
 
@@ -49,4 +50,8 @@
   (cond ((null? list) true)
         ((predicate (car list)) (all-satisfy predicate (cdr list)))
         (else false)))
+
+(define (mlist first . rest)
+  (fold-right mcons '() (append (list first)
+                                rest)))
 
