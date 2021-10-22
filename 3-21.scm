@@ -16,7 +16,8 @@
 (assert (print-queue q1)
         (mlist 'a 'b))
 
-(delete-queue! q1)
+(assert (delete-queue! q1)
+        'a)
 
 (assert (print-queue q1)
         (mlist 'b))
@@ -25,4 +26,3 @@
 
 (assert (print-queue q1)
         nil)
-

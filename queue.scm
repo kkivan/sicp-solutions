@@ -36,7 +36,8 @@
 (define (delete-queue! queue)
   (cond ((empty-queue? queue)
          (error "DELETE! called with an empty queue" queue))
-        (else (set-front-ptr! queue (mcdr (front-ptr queue))) queue)))
+        (else (let ((dequeued (mcar (front-ptr queue))))
+         (set-front-ptr! queue (mcdr (front-ptr queue))) dequeued))))
 
 (define (print-queue queue)
   (front-ptr queue))
