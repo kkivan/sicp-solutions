@@ -1,55 +1,43 @@
 #lang scheme
 
 (require "modules/sicp/sicp.rkt")
+(require "mutable-pairs.scm")
+(provide make-table)
 
-(define (mcaar pair)
-  (mcar (mcar pair)))
+(define (caar pair)
+  (car (car pair)))
 
 (define (make-table same-key?)
   (define (assoc key records)
     (cond ((null? records) false)
-          ((same-key? key (mcaar records)) (mcar records))
-          (else (assoc key (mcdr records)))))
-
-  (define (insert! key-1 key-2 value table)
-    (let ((subtable (assoc key-1 (mcdr table))))
-      (if subtable
-          (let ((record (assoc key-2 (mcdr subtable))))
-            (if record
-                (set-mcdr! record value) (set-mcdr! subtable
-                                                    (mcons (mcons key-2 value)
-                                                           (mcdr subtable)))))
-          (set-mcdr! table
-                     (mcons (list key-1
-                                  (cons key-2 value))
-                            (mcdr table)))))
-    'ok)
+          ((same-key? key (caar records)) (car records))
+          (else (assoc key (cdr records)))))
   
-  (let ((local-table (mlist '*table*)))
+  (let ((local-table (list '*table*)))
 
     (define (lookup keys) 
       (define (iter keys table) 
-        (let ((subtable (assoc (mcar keys) (mcdr table)))) 
+        (let ((subtable (assoc (car keys) (cdr table)))) 
           (if subtable 
-              (cond ((null? (mcdr keys)) (mcdr subtable)) 
-                    (else (iter (mcdr keys) subtable))) 
+              (cond ((null? (cdr keys)) (cdr subtable)) 
+                    (else (iter (cdr keys) subtable))) 
               false))) 
       (iter keys local-table))
     
     (define (gen-new-list keys value) 
          (if (null? (mcdr keys)) 
-             (mcons (mcar keys) value) 
-             (mlist (mcar keys) (gen-new-list (mcdr keys) value)))) 
+             (cons (mcar keys) value) 
+             (list (mcar keys) (gen-new-list (cdr keys) value)))) 
       
      (define (insert! keys value) 
        (define (iter keys table) 
-         (let ((subtable (assoc (mcar keys) (mcdr table)))) 
+         (let ((subtable (assoc (car keys) (cdr table)))) 
            (if subtable 
                (cond ((null? (mcdr keys)) 
-                      (set-mcdr! subtable value)) 
+                      (set-cdr! subtable value)) 
                      (else 
-                      (iter (mcdr keys) subtable))) 
-               (set-mcdr! table (mcons (gen-new-list keys value) (mcdr table))))) 
+                      (iter (cdr keys) subtable))) 
+               (set-cdr! table (cons (gen-new-list keys value) (cdr table))))) 
          'ok) 
        (iter keys local-table)) 
     
@@ -62,17 +50,17 @@
 
 (define t (make-table equal?))
 
-(assert ((t 'insert-proc!) (mlist 'cities 'bangkok) 333)
+(assert ((t 'insert-proc!) (list 'cities 'bangkok) 333)
         'ok)
 
-(assert ((t 'insert-proc!) (mlist 'cities 'tokyo) 111)
+(assert ((t 'insert-proc!) (list 'cities 'tokyo) 111)
         'ok)
 
 (t 'display)
 
-(assert ((t 'lookup-proc) (mlist 'cities 'bangkok))
+(assert ((t 'lookup-proc) (list 'cities 'bangkok))
         333)
 
-(assert ((t 'lookup-proc) (mlist 'cities 'tokyo))
+(assert ((t 'lookup-proc) (list 'cities 'tokyo))
         111)
 
