@@ -6,3 +6,5 @@
     (inverter a2 c)
     (and-gate b c d)
     (inverter d output)))
+
+; the delay of above or-gate is inverter-delay + and-gate-delay + inverter-delay
