@@ -4,7 +4,8 @@
          front-queue
          insert-queue!
          delete-queue!
-         print-queue)
+         print-queue
+         empty-queue?)
          
 (define (front-ptr queue)
   (mcar queue))
