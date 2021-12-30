@@ -1,11 +1,15 @@
 #lang scheme
 (require "modules/sicp/sicp.rkt")
+(require "mutable-pairs.scm")
+(require "queue.scm")
 
 (define (make-wire)
   (let ((signal-value 0) (action-procedures '()))
-    (define (set-my-signal! new-value) (if (not (= signal-value new-value))
-                                           (begin (set! signal-value new-value) (call-each action-procedures))
-                                           'done))
+    (define (set-my-signal! new-value)
+      (if (not (= signal-value new-value))
+          (begin (set! signal-value new-value)
+                 (call-each action-procedures))
+          'done))
     
     (define (accept-action-procedure! proc)
       (set! action-procedures
@@ -38,6 +42,41 @@
 (define e (make-wire))
 (define s (make-wire))
 
+(define (logical-not s)
+  (cond ((= s 0) 1)
+        ((= s 1) 0)
+        (else (error "Invalid signal" s))))
+
+(define (logical-and a1 a2)
+  (cond ((and (= a1 1) (= a2 1)) 1)
+        (else 0)))
+
+(define (and-gate a1 a2 output)
+  (define (and-action-procedure)
+    (let ((new-value
+           (logical-and (get-signal a1) (get-signal a2))))
+      (after-delay
+       and-gate-delay
+       (lambda () (set-signal! output new-value)))))
+  (add-action! a1 and-action-procedure)
+  (add-action! a2 and-action-procedure)
+  'ok)
+
+(define (logical-or a1 a2)
+  (cond ((or (= a1 1) (= a2 1)) 1)
+        (else 0)))
+
+(define (or-gate a1 a2 output)
+  (define (or-action-procedure)
+    (let ((new-value
+           (logical-or (get-signal a1) (get-signal a2))))
+      (after-delay
+       or-gate-delay
+       (lambda () (set-signal! output new-value)))))
+  (add-action! a1 or-action-procedure)
+  (add-action! a2 or-action-procedure)
+  'ok)
+
 (define (half-adder a b s c)
   (let ((d (make-wire))
         (e (make-wire)))
@@ -60,56 +99,142 @@
   (define (invert-input)
     (let ((new-value (logical-not (get-signal input))))
       (after-delay inverter-delay
-                   (lambda () (set-signal! outp
-                                           ut new-value)))))
+                   (lambda () (set-signal! output new-value)))))
   (add-action! input invert-input) 'ok)
 
-(define (logical-not s)
-  (cond ((= s 0) 1)
-        ((= s 1) 0)
-        (else (error "Invalid signal" s))))
+(define (after-delay delay action)
+  (add-to-agenda! (+ delay (current-time the-agenda))
+                  action
+                  the-agenda))
 
-(define (logical-and a1 a2)
-  (cond ((and (= a1 1) (= a2 1)) 1)
-        (else 0)))
+(define (propagate)
+  (if (empty-agenda? the-agenda)
+      'done
+      (let ((first-item (first-agenda-item the-agenda)))
+        (first-item)
+        (remove-first-agenda-item! the-agenda)
+        (propagate))))
 
-(define (logical-or a1 a2)
-  (cond ((or (= a1 1) (= a2 1)) 1)
-        (else 0)))
 
-(define (and-gate a1 a2 output)
-  (define (and-action-procedure)
-    (let ((new-value
-           (logical-and (get-signal a1) (get-signal a2))))
-      (after-delay
-       and-gate-delay
-       (lambda () (set-signal! output new-value)))))
-  (add-action! a1 and-action-procedure)
-  (add-action! a2 and-action-procedure)
-  'ok)
+(define (probe name wire)
+  (add-action! wire
+               (lambda ()
+                 (newline)
+                 (display name)
+                 (display " ")
+                 (display (current-time the-agenda))
+                 (display " New-value = ")
+                 (display (get-signal wire))
+                 (newline))))
 
-(define (or-gate a1 a2 output)
-  (define (or-action-procedure)
-    (let ((new-value
-           (logical-or (get-signal a1) (get-signal a2))))
-      (after-delay
-       or-gate-delay
-       (lambda () (set-signal! output new-value)))))
-  (add-action! a1 or-action-procedure)
-  (add-action! a2 or-action-procedure)
-  'ok)
+(define (make-time-segment time queue)
+  (cons time queue))
+(define (segment-time s) (car s))
+(define (segment-queue s) (cdr s))
 
-(define (or-gage-2 a1 a2 output)
-  (let ((b (make-wire))
-        (c (make-wire))
-        (d (make-wire)))
-    (inverter a1 b)
-    (inverter a2 c)
-    (and-gate b c d)
-    (inverter d output)))
-    
-    
-            
+; Agenda
+
+(define (make-agenda) (list 0))
+
+(define (current-time agenda)
+  (car agenda))
+
+(define (set-current-time! agenda time)
+  
+(set-car! agenda time))
+
+(define (segments agenda) (cdr agenda))
+
+(define (set-segments! agenda segments)
+  
+(set-cdr! agenda segments))
+
+(define (first-segment agenda)
+  (car (segments agenda)))
+
+(define (rest-segments agenda)
+  (cdr (segments agenda)))
+
+(define (empty-agenda? agenda)
+  (null? (segments agenda)))
+
+(define (add-to-agenda! time action agenda)
+  
+  (define (belongs-before? segments)
+    (or (null? segments)
+        (< time (segment-time (car segments)))))
+  
+  (define (make-new-time-segment time action)
+    (let ((q (make-queue)))
+      (insert-queue! q action)
+      (make-time-segment time q)))
+  
+  (define (add-to-segments! segments)
+    (if (= (segment-time (car segments)) time)
+        (insert-queue! (segment-queue (car segments))
+                       action)
+        (let ((rest (cdr segments)))
+          (if (belongs-before? rest)
+              (set-cdr!
+               segments
+               (cons (make-new-time-segment time action)
+                     (cdr segments)))
+              (add-to-segments! rest)))))
+  
+  (let ((segments (segments agenda)))
+    (if (belongs-before? segments)
+        (set-segments!
+         agenda
+         (cons (make-new-time-segment time action)
+               segments))
+        (add-to-segments! segments))))
+
+
+(define (remove-first-agenda-item! agenda)
+  (let ((q (segment-queue (first-segment agenda))))
+    (delete-queue! q)
+    (cond ((empty-queue? q) (set-segments! agenda (rest-segments agenda))))))
+
+(define (first-agenda-item agenda)
+  (if (empty-agenda? agenda)
+      (error "Agenda is empty: FIRST-AGENDA-ITEM")
+      (let ((first-seg (first-segment agenda)))
+        (set-current-time! agenda
+                           (segment-time first-seg))
+        (front-queue (segment-queue first-seg)))))
+
+(define the-agenda (make-agenda))
+
+; Delays
+(define inverter-delay 2)
+(define and-gate-delay 3)
+(define or-gate-delay 5)
+
+(define input-1 (make-wire))
+(define input-2 (make-wire))
+
+(define sum (make-wire))
+(define carry (make-wire))
+
+(probe 'sum sum)
+(probe 'carry carry)
+
+(half-adder input-1 input-2 sum carry)
+
+(define (ripple-carry-adder a b sum c-out)
+  (let ((c-in (make-wire)))
+  (if (null? a)
+      'ok
+      (begin (full-adder (car a) (car b) c-in (car sum) c-out)
+             (ripple-carry-adder (cdr a) (cdr b) (cdr sum) c-out)))))
+
+(set-signal! input-1 1)
+
+(propagate)     
+
+(set-signal! input-2 1)
+
+(propagate)     
 
 
 
