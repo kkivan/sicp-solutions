@@ -189,3 +189,24 @@
 (forget-value! C 'user)
 
 (set-value! F 212 'user)
+
+(define A (make-connector))
+(define B (make-connector))
+(define S (make-connector))
+
+(define (averager a b c)
+  (let ((x (make-connector))
+        (y (make-connector)))
+    (adder a b x)
+    (constant 0.5 y)
+    (multiplier x y c)
+    'ok))
+
+(averager A B S)
+
+(probe "A: " A)
+(probe "B: " B)
+(probe "S: " S)
+
+(set-value! A 2 'user)
+(set-value! S 3 'user)
