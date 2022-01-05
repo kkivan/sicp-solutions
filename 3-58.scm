@@ -7,4 +7,3 @@
                (expand (remainder (* num radix) den) den radix)))
 
 (take (expand 1 4 10) 2) ; 1/4 or 0. (2 5)
-
