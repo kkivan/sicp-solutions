@@ -12,6 +12,7 @@
          add-streams
          div-streams
          mul-streams
+         scale-stream
          integers
          ones
          take)
@@ -75,5 +76,9 @@
   (cons-stream 1 (add-streams ones integers)))
 
 (define ones (cons-stream 1 ones))
+
+(define (scale-stream stream factor)
+  (stream-map (lambda (x) (* x factor))
+              stream))
 
 
