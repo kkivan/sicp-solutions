@@ -33,7 +33,7 @@
                                            (invert-unit-series s))
                                -1)))
 
-(take (invert-unit-series integers) 10)
+;(take (invert-unit-series integers) 10)
 
 (define (div-series num den)
   (if (= (stream-car den) 0)
@@ -41,4 +41,64 @@
       (mul-series num
                   (invert-unit-series den))))
 
-(define tangent-series (div-series sine-series cosine-series))                            
+(define tangent-series (div-series sine-series cosine-series))
+
+
+(define (partial-sums s) 
+   (add-streams s (cons-stream 0 (partial-sums s)))) 
+  
+(define (pi-summands n)
+  (cons-stream (/ 1.0 n)
+               (stream-map - (pi-summands (+ n 2)))))
+
+(define pi-stream
+  (scale-stream (partial-sums (pi-summands 1)) 4))
+
+;(take pi-stream 1000)
+
+;(take (pi-summands 1) 10)
+
+(define (square x)
+  (* x x ))
+
+(define (euler-transform s)
+  (let ((s0 (stream-ref s 0))
+        (s1 (stream-ref s 1))
+        (s2 (stream-ref s 2)))
+    (cons-stream (- s2 (/ (square (- s2 s1))
+                          (+ s0 (* -2 s1) s2)))
+                 (euler-transform (stream-cdr s)))))
+
+(stream-ref pi-stream 100)
+(stream-ref (euler-transform pi-stream) 100)
+(stream-ref (euler-transform (euler-transform pi-stream)) 100)
+(stream-ref (euler-transform (euler-transform (euler-transform pi-stream))) 100)
+
+(define (make-tableau transform s)
+  (cons-stream s (make-tableau transform (transform s))))
+
+(define (accelerated-sequence transform s)
+  (stream-map stream-car (make-tableau transform s)))
+
+(take (accelerated-sequence euler-transform pi-stream) 10)
+ 
+(define (stream-limit s tolerance)
+  (let ((first (stream-car s))
+        (second (stream-car (stream-cdr s))))
+  (if (>= tolerance (abs (- first second)))
+      second
+      (stream-limit (stream-cdr s) tolerance))))
+
+(stream-limit (accelerated-sequence euler-transform pi-stream) 0.001)
+
+(define (ln2-summands n)
+  (cons-stream (/ 1.0 n)
+               (stream-map - (ln2-summands (+ n 1)))))
+
+(define ln2-stream
+  (partial-sums (ln2-summands 1)))
+
+(stream-ref ln2-stream 100)
+
+
+
