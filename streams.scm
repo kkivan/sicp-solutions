@@ -13,6 +13,7 @@
          div-streams
          mul-streams
          scale-stream
+         stream-ref
          integers
          ones
          take)
@@ -80,5 +81,10 @@
 (define (scale-stream stream factor)
   (stream-map (lambda (x) (* x factor))
               stream))
+
+(define (stream-ref s n)
+  (if (= n 0)
+      (stream-car s)
+      (stream-ref (stream-cdr s) (- n 1))))
 
 
