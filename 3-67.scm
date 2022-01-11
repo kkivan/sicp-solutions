@@ -15,6 +15,6 @@
     (stream-map (lambda (x)
                   (list (stream-car s) x))
                 (stream-cdr t))
-    (pairs (stream-cdr s) t))))
+    (pairs (stream-cdr s) t)))) ; change original proc to t here
 
 (take (pairs integers integers) 20)
