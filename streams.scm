@@ -98,4 +98,3 @@
                        (stream-cdr stream))))
         (else (stream-filter pred (stream-cdr stream)))))
 
-
