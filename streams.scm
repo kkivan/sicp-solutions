@@ -55,11 +55,8 @@
 (define the-empty-stream nil)
 
 (define (take s n)
-  (if (or (stream-null? s)
-          (= 0 n))
-      nil
-      (cons (stream-car s)
-            (take (stream-cdr s) (- n 1)))))
+  (map (lambda (x) (stream-ref s x))
+       (enumerate-interval 0 (- n 1))))
 
 (define (stream-map proc . argstreams)
   (if (stream-null? (car argstreams))
