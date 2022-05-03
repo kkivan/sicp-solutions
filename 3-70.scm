@@ -29,8 +29,51 @@
     (stream-map (lambda (x) (list (stream-car s) x)) (stream-cdr t))
     (weighted-pairs (stream-cdr s) (stream-cdr t) weight) weight)))
 
-(take (weighted-pairs integers
+(define (cube x)
+  (* x x x))
+
+(define (cube-sum p)
+  (+ (cube (car p))
+     (cube (cadr p))))
+
+(define sum-of-cubes (weighted-pairs integers
                       integers
                       (lambda (p)
-                        (apply + p)))
-      10)
+                        (let ((f (car p))
+                              (s (cadr p)))
+                          (+ (cube f)
+                             (cube s))
+                        ))))
+
+(define (duplicates-stream s)
+  (let ((first (stream-car s))
+        (next (stream-car (stream-cdr s))))
+    (if (= first next)
+        (cons-stream first
+                     (duplicates-stream (stream-cdr s)))
+        (duplicates-stream (stream-cdr s)))))
+
+(define weigthed-sum-of-two-squares
+  (weighted-pairs integers integers
+                  (lambda (p)
+                    (let ((f (car p))
+                          (s (cadr p)))
+                      (+ (sqr f)
+                         (sqr s))
+                      ))))
+
+(define (sqr-pair p)
+  (+ (sqr (car p))
+     (sqr (cadr p))))
+
+(define sum-of-two-squares-three-way
+  (duplicates-stream (duplicates-stream (stream-map sqr-pair weigthed-sum-of-two-squares))))
+(take sum-of-two-squares-three-way 5)
+
+
+
+
+
+      
+
+      
