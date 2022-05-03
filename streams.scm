@@ -17,7 +17,10 @@
          stream-filter
          integers
          ones
-         take)
+         take
+         the-empty-stream
+         to-stream
+         scan)
 
 (define (memo-func function)
   (let ((already-run? false)
@@ -48,6 +51,7 @@
 
 (define (stream-null? s)
   (eq? s nil))
+
 (define the-empty-stream nil)
 
 (define (take s n)
@@ -97,4 +101,17 @@
                        pred
                        (stream-cdr stream))))
         (else (stream-filter pred (stream-cdr stream)))))
+
+(define (to-stream list)
+  (cons-stream (car list)
+               (if (null? (cdr list))
+                   the-empty-stream
+                   (to-stream (cdr list)))))
+
+(define (scan stream initial proc)
+  (if (stream-null? stream)
+      the-empty-stream
+      (let ((result (proc initial (stream-car stream))))
+        (cons-stream result
+                 (scan (stream-cdr stream) result proc)))))
 
