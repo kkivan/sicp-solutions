@@ -1,0 +1,1 @@
+In this case no assignment would be posible, as assignment would be treated as apllication.
