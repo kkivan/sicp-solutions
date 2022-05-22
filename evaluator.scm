@@ -1,5 +1,7 @@
 #lang racket
 
+(provide evaluate)
+
 (require "modules/sicp/sicp.rkt")
 (require "mutable-pairs.scm")
 (require "read.rkt")
@@ -310,4 +312,9 @@
 (define the-global-environment (setup-environment))
 
 ;run
-(driver-loop)
+;(driver-loop)
+
+(define (evaluate exp)
+  (eval (to-mlist exp) the-global-environment))
+
+
