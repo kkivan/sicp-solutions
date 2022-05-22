@@ -13,7 +13,14 @@
          map
          cadr
          length
-         caddr)
+         caddr
+         caadr
+         cdadr
+         cddr
+         cadddr
+         cdddr
+         cdar
+         append)
 
 (define cons mcons)
 (define car mcar)
@@ -25,10 +32,22 @@
 (define list? mlist?)
 (define map mmap)
 (define length mlength)
+(define append mappend)
   
 (define (cadr pair) (car (cdr pair)))
 
 (define (caddr p) (car (cdr (cdr p))))
 
+(define (caadr p) (car (car (cdr p))))
+
+(define (cdadr p) (cdr (car (cdr p))))
+
+(define (cddr pair) (cdr (cdr pair)))
+
+(define (cadddr pair) (car (cdr (cdr (cdr pair)))))
+
+(define (cdddr pair) (cdr (cdr (cdr pair))))
+
+(define (cdar pair) (cdr (car pair)))
 
 

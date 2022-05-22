@@ -16,6 +16,8 @@
                                    (list 'cons cons)
                                    (list '+ +)
                                    (list '* *)
+                                   (list '= =)
+                                   (list '- -)
                                    (list 'not not)
                                    (list 'null? null?)))
 
@@ -44,7 +46,12 @@
 (define (and? exp)
   (tagged-list? exp 'and))
 
+(define (let? exp)
+  (tagged-list? exp 'let))
+
 (define (eval exp env)
+  (display exp)
+  (newline)
   (cond ((self-evaluating? exp) exp)
         ((variable? exp) (lookup-variable-value exp env))
         ((quoted? exp) (text-of-quotation exp))
@@ -58,6 +65,7 @@
                                        env))
         ((begin? exp) (eval-sequence (begin-actions exp) env))
         ((cond? exp) (eval (cond->if exp) env))
+        ((let? exp) (eval (let->combination exp) env))
         ((application? exp) (apply (eval (operator exp) env)
                                    (list-of-values (operands exp) env)))
         (else (error "Unknown expression type: EVAL" exp))))
@@ -191,6 +199,23 @@
                      (sequence->exp (cond-actions first))
                      (expand-clauses rest))))))
 
+(define (let-names exp)
+  (map car (cadr exp)))
+
+(define (let-exps exp)
+  (map cadr (cadr exp)))
+
+(define (let-body exp)
+  (caddr exp))
+  
+(define l (to-mlist '(let ((a 1)
+                           (b 2))
+                       (+ a b))))
+
+(define (let->combination exp)
+  (append (list (list 'lambda (let-names exp) (let-body exp))) (let-exps exp)))
+  
+
 (define (true? x) (not (eq? x false)))
 (define (false? x) (eq? x false))
 
@@ -316,5 +341,4 @@
 
 (define (evaluate exp)
   (eval (to-mlist exp) the-global-environment))
-
 
