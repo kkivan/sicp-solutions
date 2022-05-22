@@ -267,7 +267,6 @@
 (define (driver-loop)
   (prompt-for-input input-prompt)
   (let ((input (to-mlist (read))))
-    (display input)
     (let ((output (eval input the-global-environment)))
       (announce-output output-prompt)
       (user-print output)))
@@ -302,10 +301,10 @@
 (define (eval-or exp env)
   (define (rec-eval-or exps env)
     (if (no-operands? exps)
-        true
+        false
         (if (eval (car exps) env)
             true
-            (rec-eval-or exps env))))
+            (rec-eval-or (cdr exps) env))))
   (rec-eval-or (operands exp) env))
     
 (define the-global-environment (setup-environment))
