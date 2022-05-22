@@ -14,6 +14,7 @@
                                    (list 'cons cons)
                                    (list '+ +)
                                    (list '* *)
+                                   (list 'not not)
                                    (list 'null? null?)))
 
 (define (primitive-procedure-names) (map car primitive-procedures))
@@ -38,17 +39,18 @@
     env)
   'ok)
 
+(define (and? exp)
+  (tagged-list? exp 'and))
+
 (define (eval exp env)
-  (newline)
-  (display exp)
-  (display (pair? exp))
-  (newline)
   (cond ((self-evaluating? exp) exp)
         ((variable? exp) (lookup-variable-value exp env))
         ((quoted? exp) (text-of-quotation exp))
         ((assignment? exp) (eval-assignment exp env))
         ((definition? exp) (eval-definition exp env))
         ((if? exp) (eval-if exp env))
+        ((and? exp) (eval-and exp env))
+        ((or? exp) (eval-or exp env))
         ((lambda? exp) (make-procedure (lambda-parameters exp)
                                        (lambda-body exp)
                                        env))
@@ -96,6 +98,7 @@
 (define (self-evaluating? exp)
   (cond ((number? exp) true)
         ((string? exp) true)
+        ((boolean? exp) true)
         (else false)))
 
 (define (variable? exp) (symbol? exp))
@@ -283,6 +286,29 @@
                      '<procedure-env>))
       (display object)))
 
-(define the-global-environment (setup-environment))
-(driver-loop)
+(define (eval-and exp env)
+  (define (rec-eval-and exps env)
+    (if (no-operands? exps)
+        true
+        (if (eval (car exps) env)
+            (rec-eval-and (cdr exps) env)
+            false)))
+  (rec-eval-and (operands exp) env))
 
+
+(define (or? exp)
+  (tagged-list? exp 'or))
+
+(define (eval-or exp env)
+  (define (rec-eval-or exps env)
+    (if (no-operands? exps)
+        true
+        (if (eval (car exps) env)
+            true
+            (rec-eval-or exps env))))
+  (rec-eval-or (operands exp) env))
+    
+(define the-global-environment (setup-environment))
+
+;run
+(driver-loop)

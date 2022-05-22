@@ -26,8 +26,7 @@
 (define map mmap)
 (define length mlength)
   
-(define (cadr pair)
-  (car (cdr pair)))
+(define (cadr pair) (car (cdr pair)))
 
 (define (caddr p) (car (cdr (cdr p))))
 
