@@ -50,8 +50,6 @@
   (tagged-list? exp 'let))
 
 (define (eval exp env)
-  (display exp)
-  (newline)
   (cond ((self-evaluating? exp) exp)
         ((variable? exp) (lookup-variable-value exp env))
         ((quoted? exp) (text-of-quotation exp))
