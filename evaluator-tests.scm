@@ -2,10 +2,10 @@
 
 (require "modules/sicp/sicp.rkt")
 (require "evaluator.scm")
-
+(require "mutable-pairs.scm")
 (define (assert-eval exp expected)
 
-  (assert (evaluate exp) expected))
+(assert (evaluate exp) expected))
 ; or tests
 (assert-eval '(or true false) true)
 (assert-eval '(or false false true) true)
@@ -49,3 +49,20 @@
 ; let expression
 (assert-eval '(let ((c 3)(b 4)) (+ c b)) 7)
 
+; let expression with multiline body
+
+; list
+(assert-eval ''(1 2 3) (list 1 2 3))
+(assert-eval '(list 1 2 3) (list 1 2 3))
+(assert-eval '(define l (list 1 2 3)) 'ok)
+
+; map
+(assert-eval '(define (map proc items)
+                (if (null? items)
+                    '()
+                    (cons (proc (car items))
+                          (map proc (cdr items))))) 'ok)
+(assert-eval '(map (lambda (x) x) nil) nil)
+(assert-eval '(map (lambda (x) (+ x 1)) (list 1)) (list 2))
+
+(assert-eval '(map (lambda (x) (+ x 1)) l) (list 2 3 4))

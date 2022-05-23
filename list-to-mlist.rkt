@@ -1,7 +1,9 @@
 #lang scheme
 
 (provide to-mlist
-         to-list)
+         to-list
+         mlist->list)
+
 (require compatibility/mlist)
 
 

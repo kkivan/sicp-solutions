@@ -18,6 +18,9 @@
                                    (list '* *)
                                    (list '= =)
                                    (list '- -)
+                                   (list 'pr (lambda (x) (display x) (newline)))
+                                   (list 'list list)
+                                   ;(list 'map map)
                                    (list 'not not)
                                    (list 'null? null?)))
 
@@ -50,6 +53,8 @@
   (tagged-list? exp 'let))
 
 (define (eval exp env)
+  ;(display exp)
+  ;(newline)
   (cond ((self-evaluating? exp) exp)
         ((variable? exp) (lookup-variable-value exp env))
         ((quoted? exp) (text-of-quotation exp))
@@ -82,7 +87,7 @@
         (else (error "Unknown procedure type: APPLY" procedure))))
 
 (define (apply-in-underlying-scheme proc args)
-  (internal-apply proc (to-list args)))
+  (internal-apply proc (mlist->list args)))
 
 (define (eval-sequence exps env)
   (cond ((last-exp? exps)
@@ -285,6 +290,7 @@
                                          the-empty-environment)))
     (define-variable! 'true true initial-env)
     (define-variable! 'false false initial-env)
+    (define-variable! 'nil nil initial-env)
     initial-env))
 
 (define input-prompt ";;; M-Eval input:")
