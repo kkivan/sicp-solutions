@@ -20,7 +20,6 @@
                                    (list '- -)
                                    (list 'pr (lambda (x) (display x) (newline)))
                                    (list 'list list)
-                                   ;(list 'map map)
                                    (list 'not not)
                                    (list 'null? null?)))
 
